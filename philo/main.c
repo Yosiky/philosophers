@@ -6,7 +6,7 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/05/20 22:45:31 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/05/27 14:23:32 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,35 +25,29 @@ void	start_philo(int *arr)
 	arr[0] = 0;
 }
 
-int	parser(t_data *res, int argc char **argv)
+int	parser(t_input_data *arg, char **str)
 {
 	int	error;
+	int	i;
 
-	error = ee_atoi(argv[1], 
+	i = -1;
+	error = 0;
+	while (++i < 4 + arg->flag)
+		error += ee_atoi(str[i], arg->data + i);
+	return (error);	
 }
 
 int	main(int argc, char **argv)
 {
-	int	arg[6];
+	t_input_data	arg;
 
-	if (argc == 5 || argc == 6)
-	{
-		while (--argc)
-		{
-			int	value = ee_atoi(argv[argc], arg + argc);
-			printf("%d = %s, %d\n", argc, argv[argc], value);
-			if (value)
-				return (error(TEXT"Arguments not valid"));
-		}
-		if (arg[1] > 1)
-			start_philo(arg);
-		else
-		{
-			write(1, "Hello", 5);
-			return (error(TEXT"Count philophers not valid"RESET));
-		}
-	}
+	if (argc == 5)
+		arg.flag = 0;
+	else if (argc == 6)
+		arg.flag = 1;
 	else
 		return (error(TEXT"Count arguments is not equal 5 or 6"RESET));
+	if (parser(&arg, argv + 1))
+		return (error(ERROR"Invalid arguments"RESET));
 	return (0);
 }
