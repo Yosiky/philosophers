@@ -11,8 +11,10 @@ SRC			=	\
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:=.o))
 
+HEADER_DIR	=	inc
 HEADER		=	philo.h			\
 				color.h
+HEAD		=	$(addprefix $(HEADER_DIR)/,$(HEADER))
 
 .PHONY: all clean fclean re 
 
@@ -31,8 +33,8 @@ $(OBJ_DIR):
 	mkdir -p $@
 
 $(OBJ_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) $< -c -o $@
+	$(CC) $(CFLAGS) -I$(HEADER_DIR) $< -c -o $@
 
-$(NAME): $(OBJ) $(HEADER)
-	$(CC) $^ -I. -g -o $@
+$(NAME): $(OBJ) $(HEAD)
+	$(CC) -g $(OBJ) -o $@
 
