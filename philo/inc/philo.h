@@ -4,21 +4,9 @@
 # include <sys/time.h>
 # include <stddef.h>
 # include <unistd.h>
+# include <stdint.h>
 # include "color.h"
 
-<<<<<<< HEAD:philo/philo.h
-typedef struct s_input_data
-{
-	int	flag;
-	int	data[5];
-}	t_input_data;
-
-int		ee_atoi(const char *str, int *ptr);
-int		ee_strlen(const char *str);
-int		ee_putstr(int fd, const char *str);
-int		ee_putnbr(int fd, const int value);
-void	philo_say(int i, const char *str);
-=======
 typedef	struct s_params_philo
 {
 	int32_t	number_of_philo;
@@ -29,9 +17,10 @@ typedef	struct s_params_philo
 	int32_t	flag;
 }	t_params_philo;
 
-int	ee_atoi(const char *str, int *ptr);
-int	ee_strlen(const char *str);
-int	ee_putstr(int fd, const char *str);
->>>>>>> school_version:philo/inc/philo.h
+int		ee_atoi(const char *str, int *ptr);
+int		ee_strlen(const char *str);
+int		ee_putstr(int fd, const char *str);
+int		ee_putnbr(int fd, const int value);
+void	philo_say(int i, const char *str);
 
 #endif

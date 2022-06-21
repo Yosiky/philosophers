@@ -6,7 +6,7 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/21 18:02:42 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/21 18:08:45 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	start_philo(__attribute__((unused))t_params_philo *param)
 int	init_param(t_params_philo *dst, int size, char **str)
 {
 	int	error;
-	int	i;
 
 	error = ee_atoi(str[0], &dst->number_of_philo);
 	error += ee_atoi(str[1], &dst->time_to_die);
@@ -58,7 +57,5 @@ int	main(int argc, char **argv)
 	}
 	else
 		return (error(TEXT"Count arguments is not equal 5 or 6"RESET));
-	if (parser(&arg, argv + 1))
-		return (error(ERROR"Invalid arguments"RESET));
 	return (0);
 }

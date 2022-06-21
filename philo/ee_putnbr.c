@@ -6,7 +6,7 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 14:44:32 by eestelle          #+#    #+#             */
-/*   Updated: 2022/05/27 15:08:10 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/21 18:07:40 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ int	ee_putnbr(int n, int fd)
 	}
 	else if (value == 0)
 	{
-			write(fd, "0", 1);
-			return ;
+			return (write(fd, "0", 1));
 	}
 	len = 0;
 	while (value)
