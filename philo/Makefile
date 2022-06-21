@@ -5,8 +5,10 @@ NAME		= philo
 SRC			=	\
 				ee_atoi			\
 				ee_strlen		\
+				ee_putnbr		\
 				ee_putstr		\
-				main
+				main			\
+				say_philosopher
 
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:=.o))
