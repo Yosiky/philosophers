@@ -6,7 +6,7 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/21 18:08:45 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/23 23:10:50 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,24 @@ int	error(const char *str)
 	return (1);
 }
 
+pthread_mutex_t	**get_mutex_array(void)
+{
+	static pthread_mutex_t	*array;
+
+	return (&array);
+}
+
 void	start_philo(__attribute__((unused))t_params_philo *param)
 {
+	int32_t		i;
+	pthread_mutex_t	**arr;
+
+	arr = get_mutex_array();
+	*arr = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * param->number_of_philo);
+	i = -1;
+	while (++i < param->number_of_philo)
+		pthread_mutex_init((*arr)[i], NULL);
+
 	return ;
 }
 
