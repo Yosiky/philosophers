@@ -6,7 +6,7 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/24 13:44:17 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/24 14:53:36 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,12 @@ int	init_param(t_params_philo *dst, int size, char **str)
 	return (error);
 }
 
+int	check_param(t_params_philo *param)
+{
+	return (param->number_of_philo <= 1 || param->time_to_die <= 0 || param->time_to_eat <= 0 || param->time_to_sleep <= 0
+			|| (param->flag && param->number_of_times_each_philo_must_eat <= 0));
+}
+
 int	main(int argc, char **argv)
 {
 	t_params_philo	param;
@@ -65,11 +71,11 @@ int	main(int argc, char **argv)
 	{
 		if (init_param(&param, argc - 1, argv + 1))
 			return (error(TEXT"Arguments not valid"));
-		if (param.number_of_philo > 1)
+		print_info(&param);
+		if (!check_param(&param))
 			start_philo(&param);
 		else
 			return (error(TEXT"Count philophers not valid"RESET));
-		print_info(&param);
 	}
 	else
 		return (error(TEXT"Count arguments is not equal 5 or 6"RESET));
