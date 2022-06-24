@@ -6,12 +6,11 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/23 23:10:50 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/24 13:44:17 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <stdio.h>
 
 int	error(const char *str)
 {
@@ -36,7 +35,7 @@ void	start_philo(__attribute__((unused))t_params_philo *param)
 	*arr = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * param->number_of_philo);
 	i = -1;
 	while (++i < param->number_of_philo)
-		pthread_mutex_init((*arr)[i], NULL);
+		pthread_mutex_init((*arr) + i, NULL);
 
 	return ;
 }
@@ -70,6 +69,7 @@ int	main(int argc, char **argv)
 			start_philo(&param);
 		else
 			return (error(TEXT"Count philophers not valid"RESET));
+		print_info(&param);
 	}
 	else
 		return (error(TEXT"Count arguments is not equal 5 or 6"RESET));

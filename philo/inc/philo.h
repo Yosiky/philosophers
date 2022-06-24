@@ -5,7 +5,14 @@
 # include <stddef.h>
 # include <unistd.h>
 # include <stdint.h>
+# include <pthread.h>
 # include "color.h"
+
+# ifdef __linux__
+#  include <malloc.h>
+# else
+#  include <stdlib.h>
+# endif
 
 typedef	struct s_params_philo
 {
@@ -22,5 +29,6 @@ int		ee_strlen(const char *str);
 int		ee_putstr(int fd, const char *str);
 int		ee_putnbr(int fd, const int value);
 void	philo_say(int i, const char *str);
+void	print_info(t_params_philo *param);
 
 #endif

@@ -6,13 +6,13 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 14:44:32 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/21 18:07:40 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/24 13:51:44 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ee_putnbr(int n, int fd)
+int	ee_putnbr(int fd, const int n)
 {
 	static char			arr[10];
 	static size_t		len;

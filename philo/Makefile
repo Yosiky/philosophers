@@ -8,7 +8,8 @@ SRC			=	\
 				ee_putnbr		\
 				ee_putstr		\
 				main			\
-				say_philosopher
+				say_philosopher	\
+				print_message
 
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:=.o))
