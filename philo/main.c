@@ -6,7 +6,7 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/24 14:53:36 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/24 21:09:06 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,45 @@ int	error(const char *str)
 	return (1);
 }
 
-pthread_mutex_t	**get_mutex_array(void)
+t_mutex	*get_mutex_array(void)
 {
-	static pthread_mutex_t	*array;
+	static t_mutex	mutex;
 
-	return (&array);
+	return (&mutex);
 }
 
-void	start_philo(__attribute__((unused))t_params_philo *param)
+void	destroy_mutex(t_mutex *arr)
 {
-	int32_t		i;
-	pthread_mutex_t	**arr;
+	uint32_t	i;
+
+	i = -1;
+	while (++i < arr->size)
+		pthread_mutex_destroy(&arr->array[i]);
+}
+
+int	init_mutex(t_mutex *arr, uint32_t count)
+{
+	arr->size = -1;
+	arr->count = 0;
+	arr->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * count);
+	while (++arr->size < count)
+	{
+		if (pthread_mutex_init(&arr->array[arr->size], NULL))
+		{
+			destroy_mutex(arr);
+			free(arr->array);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int	start_philo(t_params_philo *param)
+{
+	t_mutex	*arr;
 
 	arr = get_mutex_array();
-	*arr = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * param->number_of_philo);
-	i = -1;
-	while (++i < param->number_of_philo)
-		pthread_mutex_init((*arr) + i, NULL);
-
-	return ;
+	return (init_mutex(arr, param->number_of_philo));
 }
 
 int	init_param(t_params_philo *dst, int size, char **str)
@@ -63,17 +83,44 @@ int	check_param(t_params_philo *param)
 			|| (param->flag && param->number_of_times_each_philo_must_eat <= 0));
 }
 
+void	philo_live_one(void)
+{
+	static const t_params_philo	*param = get_param_philo();
+	static t_mutex				*mutex = get_mutex_array();
+	static uint32_t				i = -1;
+	struct timeval				t;
+
+	++i;
+	if (i % 2)
+		usleep(10);
+	while (1)
+	{
+		pthread_mutex_lock(arr + i);
+		pthread_mutex_lock(arr + (i + 1) % param->size);
+		gettimeofday(&t, NULL);
+		usleep(param->
+	}
+	
+}
+
 int	main(int argc, char **argv)
 {
 	t_params_philo	param;
 
+	get_time_start_work();
+	init_mutex(get_mutex_print(), 1);
 	if (argc == 5 || argc == 6)
 	{
 		if (init_param(&param, argc - 1, argv + 1))
 			return (error(TEXT"Arguments not valid"));
 		print_info(&param);
 		if (!check_param(&param))
-			start_philo(&param);
+		{
+			if (!start_philo(&param))
+				return (0);
+			else
+				error(TEXT"Don't initial all mutex"RESET);
+		}
 		else
 			return (error(TEXT"Count philophers not valid"RESET));
 	}

@@ -6,7 +6,7 @@
 /*   By: eestelle <eestelle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:52:56 by eestelle          #+#    #+#             */
-/*   Updated: 2022/05/20 22:36:07 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/24 18:01:13 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 static int	check_symbol(const char c)
 {
-	return (c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == ' ');
+	return (c == '\f' || c == '\n' || c == '\r'
+		|| c == '\t' || c == '\v' || c == ' ');
 }
 
 int	ee_atoi(const char *str, int *ptr)

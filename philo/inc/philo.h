@@ -6,7 +6,7 @@
 /*   By: eestelle <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:59:29 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/24 18:00:09 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/24 20:54:49 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ typedef struct s_params_philo
 	int32_t	flag;
 }	t_params_philo;
 
+typedef struct s_mutex
+{
+	pthread_mutex_t	*array;
+	uint32_t		size;
+	uint32_t		count;
+}	t_mutex;
+
 int				ee_atoi(const char *str, int *ptr);
 int				ee_strlen(const char *str);
 int				ee_putstr(int fd, const char *str);
@@ -43,5 +50,6 @@ int				ee_putnbr(int fd, const int value);
 void			philo_say(int i, const char *str);
 void			print_info(t_params_philo *param);
 pthread_mutex_t	*get_mutex_print(void);
+struct timeval	*get_time_start_work(void);
 
 #endif
