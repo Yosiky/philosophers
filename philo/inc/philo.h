@@ -13,6 +13,8 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+#include <stdio.h>
+
 # include <sys/time.h>
 # include <stddef.h>
 # include <unistd.h>
@@ -39,6 +41,7 @@ typedef struct s_params_philo
 typedef struct s_mutex
 {
 	pthread_mutex_t	*array;
+	pthread_mutex_t	check;
 	uint32_t		size;
 	uint32_t		count;
 }	t_mutex;
@@ -46,10 +49,13 @@ typedef struct s_mutex
 int				ee_atoi(const char *str, int *ptr);
 int				ee_strlen(const char *str);
 int				ee_putstr(int fd, const char *str);
-int				ee_putnbr(int fd, const int value);
+int				ee_putnbr(int fd, const uint32_t value);
 void			philo_say(int i, const char *str);
 void			print_info(t_params_philo *param);
-pthread_mutex_t	*get_mutex_print(void);
+t_mutex	        *get_mutex_array(void);
+pthread_mutex_t *get_mutex_print(void);
+void	        destroy_mutex(t_mutex *arr);
+int	            init_mutex(t_mutex *arr, uint32_t count);
 struct timeval	*get_time_start_work(void);
 
 #endif

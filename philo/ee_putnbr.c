@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-int	ee_putnbr(int fd, const int n)
+int	ee_putnbr(int fd, const uint32_t n)
 {
 	static char			arr[10];
 	static size_t		len;

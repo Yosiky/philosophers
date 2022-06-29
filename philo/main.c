@@ -6,11 +6,25 @@
 /*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/24 21:09:06 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/06/29 12:36:25 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+t_params_philo	*get_param_philo(void)
+{
+	static t_params_philo	param;
+
+	return (&param);
+}
+
+uint32_t	get_number_philo(void)
+{
+	static uint32_t	i = 0;
+
+	return (i++);
+}
 
 int	error(const char *str)
 {
@@ -19,45 +33,30 @@ int	error(const char *str)
 	return (1);
 }
 
-t_mutex	*get_mutex_array(void)
-{
-	static t_mutex	mutex;
-
-	return (&mutex);
-}
-
-void	destroy_mutex(t_mutex *arr)
-{
-	uint32_t	i;
-
-	i = -1;
-	while (++i < arr->size)
-		pthread_mutex_destroy(&arr->array[i]);
-}
-
-int	init_mutex(t_mutex *arr, uint32_t count)
-{
-	arr->size = -1;
-	arr->count = 0;
-	arr->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * count);
-	while (++arr->size < count)
-	{
-		if (pthread_mutex_init(&arr->array[arr->size], NULL))
-		{
-			destroy_mutex(arr);
-			free(arr->array);
-			return (1);
-		}
-	}
-	return (0);
-}
+void	*philo_live_one(void *arg);
 
 int	start_philo(t_params_philo *param)
 {
-	t_mutex	*arr;
+	pthread_t	*tid;
 
-	arr = get_mutex_array();
-	return (init_mutex(arr, param->number_of_philo));
+	tid = (pthread_t *)malloc(sizeof(pthread_t) * param->number_of_philo);
+	if (pthread_mutex_init(get_mutex_print(), NULL))
+		return (1);
+    if (init_mutex(get_mutex_array(), param->number_of_philo))
+        return (1);
+	get_time_start_work();
+	for (int i = 0; i < param->number_of_philo; i += 2)
+	{
+		pthread_create(&tid[i], NULL, philo_live_one, &i);
+		pthread_detach(tid[i]);
+	}
+	for (int i = 1; i < param->number_of_philo; i += 2)
+	{
+		pthread_create(&tid[i], NULL, philo_live_one, &i);
+		pthread_detach(tid[i]);
+	}
+	while(1) ;
+	return (0);
 }
 
 int	init_param(t_params_philo *dst, int size, char **str)
@@ -83,40 +82,53 @@ int	check_param(t_params_philo *param)
 			|| (param->flag && param->number_of_times_each_philo_must_eat <= 0));
 }
 
-void	philo_live_one(void)
-{
-	static const t_params_philo	*param = get_param_philo();
-	static t_mutex				*mutex = get_mutex_array();
-	static uint32_t				i = -1;
-	struct timeval				t;
 
-	++i;
-	if (i % 2)
-		usleep(10);
+void	*philo_live_one(__attribute__((unused))void *arg)
+{
+	static t_params_philo	*param;
+	static t_mutex			*mutex;
+	static int				flag = 1;
+	uint32_t				i;
+
+	pthread_mutex_lock(get_mutex_print());
+	if (flag) {
+		param = get_param_philo();
+		mutex = get_mutex_array();
+		--flag;
+	}
+	i = *((int32_t *)arg);
+	pthread_mutex_unlock(get_mutex_print());
 	while (1)
 	{
-		pthread_mutex_lock(arr + i);
-		pthread_mutex_lock(arr + (i + 1) % param->size);
-		gettimeofday(&t, NULL);
-		usleep(param->
+		pthread_mutex_lock(mutex->array + i);
+		philo_say(i, "has take a fork 0\n");
+		pthread_mutex_lock(mutex->array + (i + 1) % param->number_of_philo);
+		philo_say(i, "has take a fork 1\n");
+		philo_say(i, "is eating\n");
+		usleep(param->time_to_eat);
+		pthread_mutex_unlock(mutex->array + i);
+		philo_say(i, "has take a fork 0\n");
+		pthread_mutex_unlock(mutex->array + (i + 1) % param->number_of_philo);
+		philo_say(i, "has take a fork 1\n");
+		philo_say(i, "is sleeping\n");
+		usleep(param->time_to_sleep);
+		philo_say(i, "is thinking\n");
 	}
-	
 }
 
 int	main(int argc, char **argv)
 {
-	t_params_philo	param;
+	t_params_philo	*param;
 
-	get_time_start_work();
-	init_mutex(get_mutex_print(), 1);
+	param = get_param_philo();
 	if (argc == 5 || argc == 6)
 	{
-		if (init_param(&param, argc - 1, argv + 1))
+		if (init_param(param, argc - 1, argv + 1))
 			return (error(TEXT"Arguments not valid"));
-		print_info(&param);
-		if (!check_param(&param))
+		print_info(param);
+		if (!check_param(param))
 		{
-			if (!start_philo(&param))
+			if (!start_philo(param))
 				return (0);
 			else
 				error(TEXT"Don't initial all mutex"RESET);
