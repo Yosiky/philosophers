@@ -31,7 +31,7 @@ void	philo_say(int i, const char *str)
 
 	pthread_mutex_lock(get_mutex_print());
 	gettimeofday(&t, NULL);
-	ee_putnbr(1, (t.tv_sec - get_time_start_work()->tv_sec) * 1000 + t.tv_usec - get_time_start_work()->tv_usec);
+	ee_putnbr(1, ((t.tv_sec - get_time_start_work()->tv_sec) * 1000 + t.tv_usec - get_time_start_work()->tv_usec) / 1000);
 	write(1, " ", 1);
 	ee_putnbr(1, i);
 	write(1, " ", 1);

@@ -12,6 +12,34 @@
 
 #include "philo.h"
 
+#ifdef __APPLE__
+
+void	ft_usleep(useconds_t n)
+{
+	struct timeval	start;
+	struct timeval	step;
+
+	gettimeofday(&start, NULL);
+	while (1)
+	{
+		usleep(50);
+		gettimeofday(&step, NULL);
+		if ((size_t)(((size_t)(step.tv_sec - start.tv_sec)) * 1000000 +
+((size_t)(step.tv_usec - start.tv_usec))) > n)
+			break ;
+	}
+}
+
+#else
+
+void	ft_usleep(useconds_t usec)
+{
+	usleep(usec);
+}
+
+#endif
+
+
 t_params_philo	*get_param_philo(void)
 {
 	static t_params_philo	param;
@@ -19,11 +47,20 @@ t_params_philo	*get_param_philo(void)
 	return (&param);
 }
 
-uint32_t	get_number_philo(void)
+uint32_t	get_number_philo_one(void)
 {
-	static uint32_t	i = 0;
+	static uint32_t	i = 1;
 
-	return (i++);
+	i += 2;
+	return (i - 2);
+}
+
+uint32_t	get_number_philo_two(void)
+{
+	static uint32_t	i = 2;
+
+	i += 2;
+	return (i - 2);
 }
 
 int	error(const char *str)
@@ -34,6 +71,7 @@ int	error(const char *str)
 }
 
 void	*philo_live_one(void *arg);
+void	*philo_live_two(void *arg);
 
 int	start_philo(t_params_philo *param)
 {
@@ -47,12 +85,12 @@ int	start_philo(t_params_philo *param)
 	get_time_start_work();
 	for (int i = 0; i < param->number_of_philo; i += 2)
 	{
-		pthread_create(&tid[i], NULL, philo_live_one, &i);
+		pthread_create(&tid[i], NULL, philo_live_one, NULL);
 		pthread_detach(tid[i]);
 	}
 	for (int i = 1; i < param->number_of_philo; i += 2)
 	{
-		pthread_create(&tid[i], NULL, philo_live_one, &i);
+		pthread_create(&tid[i], NULL, philo_live_two, NULL);
 		pthread_detach(tid[i]);
 	}
 	while(1) ;
@@ -67,6 +105,9 @@ int	init_param(t_params_philo *dst, int size, char **str)
 	error += ee_atoi(str[1], &dst->time_to_die);
 	error += ee_atoi(str[2], &dst->time_to_eat);
 	error += ee_atoi(str[3], &dst->time_to_sleep);
+	dst->time_to_die *= 1000;
+	dst->time_to_eat *= 1000;
+	dst->time_to_sleep *= 1000;
 	dst->flag = 0;
 	if (size == 5)
 	{
@@ -89,30 +130,78 @@ void	*philo_live_one(__attribute__((unused))void *arg)
 	static t_mutex			*mutex;
 	static int				flag = 1;
 	uint32_t				i;
-
+	int32_t					count;
+	
+	count = 0;
 	pthread_mutex_lock(get_mutex_print());
 	if (flag) {
 		param = get_param_philo();
 		mutex = get_mutex_array();
 		--flag;
 	}
-	i = *((int32_t *)arg);
+	i = get_number_philo_one();
+
 	pthread_mutex_unlock(get_mutex_print());
 	while (1)
 	{
-		pthread_mutex_lock(mutex->array + i);
+		pthread_mutex_lock(mutex->array + i % param->number_of_philo);
 		philo_say(i, "has take a fork 0\n");
 		pthread_mutex_lock(mutex->array + (i + 1) % param->number_of_philo);
 		philo_say(i, "has take a fork 1\n");
 		philo_say(i, "is eating\n");
-		usleep(param->time_to_eat);
-		pthread_mutex_unlock(mutex->array + i);
-		philo_say(i, "has take a fork 0\n");
+		++count;
+		ft_usleep(param->time_to_eat);
+		pthread_mutex_unlock(mutex->array + i % param->number_of_philo);
 		pthread_mutex_unlock(mutex->array + (i + 1) % param->number_of_philo);
+		philo_say(i, "is sleeping\n");
+		ft_usleep(param->time_to_sleep);
+		if (param->flag && count == param->number_of_times_each_philo_must_eat)
+		{
+			philo_say(i, "died\n");
+			return (0);
+		}
+		else
+			philo_say(i, "is thinking\n");
+	}
+}
+
+void	*philo_live_two(__attribute__((unused))void *arg)
+{
+	static t_params_philo	*param;
+	static t_mutex			*mutex;
+	static int				flag = 1;
+	uint32_t				i;
+	int32_t					count;
+	
+	count = 0;
+	pthread_mutex_lock(get_mutex_print());
+	if (flag) {
+		param = get_param_philo();
+		mutex = get_mutex_array();
+		--flag;
+	}
+	i = get_number_philo_two();
+	pthread_mutex_unlock(get_mutex_print());
+	while (1)
+	{
+		pthread_mutex_lock(mutex->array + (i + 1) % param->number_of_philo);
+		pthread_mutex_lock(mutex->array + i % param->number_of_philo);
 		philo_say(i, "has take a fork 1\n");
+		philo_say(i, "has take a fork 0\n");
+		philo_say(i, "is eating\n");
+		++count;
+		usleep(param->time_to_eat);
+		pthread_mutex_lock(mutex->array + (i + 1) % param->number_of_philo);
+		pthread_mutex_lock(mutex->array + i % param->number_of_philo);
 		philo_say(i, "is sleeping\n");
 		usleep(param->time_to_sleep);
-		philo_say(i, "is thinking\n");
+		if (param->flag && count == param->number_of_times_each_philo_must_eat)
+		{
+			philo_say(i, "died\n");
+			return (0);
+		}
+		else
+			philo_say(i, "is thinking\n");
 	}
 }
 
