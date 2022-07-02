@@ -19,6 +19,13 @@ pthread_mutex_t *get_mutex_print(void)
 	return (&mutex);
 }
 
+pthread_mutex_t *get_mutex_for_number(void)
+{
+	static pthread_mutex_t	mutex;
+
+	return (&mutex);
+}
+
 t_mutex	*get_mutex_array(void)
 {
     static t_mutex	mutex;

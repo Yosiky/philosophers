@@ -15,13 +15,7 @@
 struct timeval	*get_time_start_work(void)
 {
 	static struct timeval	t;
-	static char				flag = 0;
 
-	if (!flag)
-	{
-		gettimeofday(&t, NULL);
-		flag = 1;
-	}
 	return (&t);
 }
 

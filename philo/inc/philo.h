@@ -54,6 +54,7 @@ void			philo_say(int i, const char *str);
 void			print_info(t_params_philo *param);
 t_mutex	        *get_mutex_array(void);
 pthread_mutex_t *get_mutex_print(void);
+pthread_mutex_t *get_mutex_for_number(void);
 void	        destroy_mutex(t_mutex *arr);
 int	            init_mutex(t_mutex *arr, uint32_t count);
 struct timeval	*get_time_start_work(void);
