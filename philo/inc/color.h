@@ -22,15 +22,15 @@
 # define WHITE			0x00ffffff
 # define BLACK			0x00000000
 
-# define TERM_BLACK		"\e[1;90m"
-# define TERM_RED		"\e[1;91m"
-# define TERM_GREEN		"\e[1;92m"
-# define TERM_YELLOW	"\e[1;93m"
-# define TERM_BLUE		"\e[1;94m"
-# define TERM_PURPLE	"\e[1;95m"
-# define TERM_CYAN		"\e[1;96m"
-# define TERM_WHITE		"\e[1;97m"
-# define TERM_RESET		"\e[0m"
+# define TERM_BLACK		"\x1b[1;90m"
+# define TERM_RED		"\x1b[1;91m"
+# define TERM_GREEN		"\x1b[1;92m"
+# define TERM_YELLOW	"\x1b[1;93m"
+# define TERM_BLUE		"\x1b[1;94m"
+# define TERM_PURPLE	"\x1b[1;95m"
+# define TERM_CYAN		"\x1b[1;96m"
+# define TERM_WHITE		"\x1b[1;97m"
+# define TERM_RESET		"\x1b[0m"
 
 # define TEXT			TERM_WHITE
 # define OK				TERM_GREEN

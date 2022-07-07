@@ -72,6 +72,14 @@ void	philo_say(int number_philo, const char *str)
 
 	pthread_mutex_lock(get_mutex_print());
 	gettimeofday(&t, NULL);
+	pthread_mutex_lock(get_mutex_for_number());
+	if ((*get_flag_philo())[i - 1])
+	{
+		pthread_mutex_unlock(get_mutex_print());
+		pthread_mutex_unlock(get_mutex_for_number());
+		return ;
+	}
+	pthread_mutex_unlock(get_mutex_for_number());
 	if (t.tv_usec < get_time_start_work()->tv_usec)
 	{
 		i = ee_itoa(t.tv_sec - get_time_start_work()->tv_sec - 1, line);

@@ -1,5 +1,5 @@
 CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror -Wno-misleading-indentation
+CFLAGS		=	-Wall -Wextra -Werror 
 
 NAME		= philo
 SRC			=	\
@@ -10,7 +10,8 @@ SRC			=	\
 				main			\
 				say_philosopher	\
 				print_message	\
-				mutex
+				mutex			\
+				ft_memset
 
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:=.o))

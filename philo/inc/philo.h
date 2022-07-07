@@ -56,5 +56,6 @@ pthread_mutex_t *get_mutex_for_number(void);
 void	        destroy_mutex(t_mutex *arr);
 int	            init_mutex(t_mutex *arr, int32_t count);
 struct timeval	*get_time_start_work(void);
-
+void	*ft_memset(void *s, int c, size_t n);
+uint8_t		**get_flag_philo(void);
 #endif
