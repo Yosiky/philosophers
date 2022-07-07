@@ -64,7 +64,7 @@ void	swap(char *line)
 	line[0] = '.';
 }
 
-void	philo_say(int number_philo, const char *str)
+void	philo_say(int number_philo, char *str)
 {
 	static struct timeval	t;
 	static char				line[100];
@@ -82,21 +82,21 @@ void	philo_say(int number_philo, const char *str)
 	pthread_mutex_unlock(get_mutex_for_number());
 	if (t.tv_usec < get_time_start_work()->tv_usec)
 	{
-		i = ee_itoa(t.tv_sec - get_time_start_work()->tv_sec - 1, line);
+		i = ee_itoa((int32_t)(t.tv_sec - get_time_start_work()->tv_sec - 1), line);
 		line[i++] = ':';
-		i += ee_itoa(1000000 + t.tv_usec - get_time_start_work()->tv_usec, line + i);
+		i += ee_itoa((int32_t)(1000000 + t.tv_usec - get_time_start_work()->tv_usec), line + i);
 	}
 	else
 	{
-		i = ee_itoa(t.tv_sec - get_time_start_work()->tv_sec, line);
+		i = ee_itoa((int32_t)(t.tv_sec - get_time_start_work()->tv_sec), line);
 		line[i++] = ':';
-		i += ee_itoa(t.tv_usec - get_time_start_work()->tv_usec, line + i);
+		i += ee_itoa((int32_t)(t.tv_usec - get_time_start_work()->tv_usec), line + i);
 	}
 	swap(line + (i++) - 3);
 	line[i++] = ' ';
 	i += ee_itoa(number_philo, line + i);
 	line[i++] = ' ';
 	i += ee_strcpy(line + i, (char *)str);
-	write(1, line, i);
+	write(1, line, (size_t)i);
 	pthread_mutex_unlock(get_mutex_print());
 }

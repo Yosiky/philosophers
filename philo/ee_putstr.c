@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-int	ee_putstr(int fd, const char *str)
+int32_t	ee_putstr(int fd, const char *str)
 {
-	return (write(fd, str, ee_strlen(str)));
+	return ((int32_t)write(fd, str, ee_strlen(str)));
 }

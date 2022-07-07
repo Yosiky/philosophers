@@ -12,48 +12,50 @@
 
 #include "philo.h"
 
-pthread_mutex_t *get_mutex_print(void)
+t_mutex *get_mutex_struct(void)
 {
-	static pthread_mutex_t	mutex;
+	static t_mutex  mutex;
 
 	return (&mutex);
 }
 
-pthread_mutex_t *get_mutex_for_number(void)
+int	destroy_tmutex(t_mutex *elem, int8_t mask)
 {
-	static pthread_mutex_t	mutex;
-
-	return (&mutex);
+	if (mask & 1)
+	{
+		while (elem->size-- > 0)
+			pthread_mutex_destroy(&elem->array[elem->size]);
+		free(elem->array);
+	}
+	if (mask & 2)
+		pthread_mutex_destroy(&elem->print);
+	if (mask & 4)
+		pthread_mutex_destroy(&elem->number);
+	if (mask & 8)
+		pthread_mutex_destroy(&elem->check);
+	return (mask);
 }
 
-t_mutex	*get_mutex_array(void)
+int	init_mutex(t_mutex *elem, int32_t count)
 {
-    static t_mutex	mutex;
+	int8_t	mask;
 
-    return (&mutex);
-}
-
-void	destroy_mutex(t_mutex *arr)
-{
-    int32_t	i;
-
-    i = 0;
-    while (i < arr->size) 
-        pthread_mutex_destroy(&arr->array[i++]);
-	free(arr->array);
-}
-
-int	init_mutex(t_mutex *arr, int32_t count)
-{
-    arr->size = -1;
-    arr->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * count);
-    while (++arr->size < count)
-    {
-        if (pthread_mutex_init(&arr->array[arr->size], NULL))
-        {
-            destroy_mutex(arr);
-            return (1);
-        }
-    }
-    return (0);
+	mask = 0;
+	elem->size = -1;
+	elem->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * (unsigned long)count);
+	while (++elem->size < count)
+		if (pthread_mutex_init(&elem->array[elem->size], NULL))
+		{
+			mask = 1;
+			break ;
+		}	
+	if (pthread_mutex_init(&elem->print, NULL))
+		mask += 2;
+	if (pthread_mutex_init(&elem->number, NULL))
+		mask += 4;
+	if (pthread_mutex_init(&elem->check, NULL))
+		mask += 8;
+	if (mask)
+		return (destroy_tmutex(elem, mask));
+	return (0);
 }

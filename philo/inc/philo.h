@@ -38,21 +38,32 @@ typedef struct s_params_philo
 	int32_t	flag;
 }	t_params_philo;
 
+typedef struct s_philo
+{
+	int32_t		left;
+	int32_t		right;
+	int32_t		count;
+	uint8_t		*flag;
+	struct timeval	t;
+	struct timeval	last;
+}	t_philo;
+
 typedef struct s_mutex
 {
 	pthread_mutex_t	*array;
 	int32_t			size;
+	pthread_mutex_t	print;
+	pthread_mutex_t	number;
+	pthread_mutex_t	check;
 }	t_mutex;
 
 int				ee_atoi(const char *str, int *ptr);
-int				ee_strlen(const char *str);
-int				ee_putstr(int fd, const char *str);
-int				ee_putnbr(int fd, const uint32_t value);
-void			philo_say(int i, const char *str);
+uint32_t		ee_strlen(const char *str);
+int32_t			ee_putstr(int fd, const char *str);
+int32_t			ee_putnbr(int fd, const int32_t n);
+void			philo_say(int number_philo, char *str);
 void			print_info(t_params_philo *param);
-t_mutex	        *get_mutex_array(void);
-pthread_mutex_t *get_mutex_print(void);
-pthread_mutex_t *get_mutex_for_number(void);
+t_mutex 		*get_mutex_struct(void);
 void	        destroy_mutex(t_mutex *arr);
 int	            init_mutex(t_mutex *arr, int32_t count);
 struct timeval	*get_time_start_work(void);

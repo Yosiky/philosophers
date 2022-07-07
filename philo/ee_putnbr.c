@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-int	ee_putnbr(int fd, const uint32_t n)
+int32_t	ee_putnbr(int fd, const int32_t n)
 {
 	static char			arr[10];
-	static size_t		len;
+	static int32_t		len;
 	static long long	value;
 
 	value = n;
@@ -25,13 +25,13 @@ int	ee_putnbr(int fd, const uint32_t n)
 		value *= -1;
 	}
 	else if (value == 0)
-		return (write(fd, "0", 1));
+		return ((int32_t)write(fd, "0", 1));
 	len = 0;
 	while (value)
 	{
 		arr[10 - 1 - (len++)] = '0' + value % 10;
 		value /= 10;
 	}
-	write(fd, arr + 10 - len, len);
+	write(fd, arr + 10 - len, (size_t)len);
 	return (len);
 }

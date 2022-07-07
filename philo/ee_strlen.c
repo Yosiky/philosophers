@@ -12,9 +12,9 @@
 
 #include "philo.h"
 
-int	ee_strlen(const char *str)
+uint32_t	ee_strlen(const char *str)
 {
-	int	size;
+	uint32_t	size;
 
 	if (str == NULL)
 		return (0);

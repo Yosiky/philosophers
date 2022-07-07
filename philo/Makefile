@@ -1,5 +1,5 @@
 CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror 
+CFLAGS		=	-Wall -Wextra -Werror #-pedantic-errors -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wsign-promo -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Wzero-as-null-pointer-constant -Wextra-semi -Wsign-conversion
 
 NAME		= philo
 SRC			=	\

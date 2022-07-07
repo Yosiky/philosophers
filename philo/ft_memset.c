@@ -53,7 +53,7 @@ void	ft_fast_completion(char *bs, size_t n, int c)
 	len = n % 8;
 	bs = (char *)ptrs;
 	while (len--)
-		*(bs++) = (unsigned char)c;
+		*(bs++) = (char)c;
 }
 
 void	*ft_memset(void *s, int c, size_t n)
@@ -63,7 +63,7 @@ void	*ft_memset(void *s, int c, size_t n)
 	bptr = (char *)s;
 	while ((size_t)bptr % 8 && n)
 	{
-		*(bptr++) = (unsigned char)c;
+		*(bptr++) = (char)c;
 		n--;
 	}
 	if (!n)
