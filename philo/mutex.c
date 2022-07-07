@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mutex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eestelle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eestelle <eestelle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:37:21 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/29 12:33:31 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/07/03 21:08:43 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,17 @@ t_mutex	*get_mutex_array(void)
 
 void	destroy_mutex(t_mutex *arr)
 {
-    uint32_t	i;
+    int32_t	i;
 
-    i = -1;
-    while (++i < arr->size)
-        pthread_mutex_destroy(&arr->array[i]);
+    i = 0;
+    while (i < arr->size) 
+        pthread_mutex_destroy(&arr->array[i++]);
 	free(arr->array);
 }
 
-int	init_mutex(t_mutex *arr, uint32_t count)
+int	init_mutex(t_mutex *arr, int32_t count)
 {
     arr->size = -1;
-    arr->count = 0;
     arr->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * count);
     while (++arr->size < count)
     {

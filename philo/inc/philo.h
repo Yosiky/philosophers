@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eestelle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eestelle <eestelle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 17:59:29 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/24 20:54:49 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/07/03 21:08:23 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,7 @@ typedef struct s_params_philo
 typedef struct s_mutex
 {
 	pthread_mutex_t	*array;
-	pthread_mutex_t	check;
-	uint32_t		size;
-	uint32_t		count;
+	int32_t			size;
 }	t_mutex;
 
 int				ee_atoi(const char *str, int *ptr);
@@ -56,7 +54,7 @@ t_mutex	        *get_mutex_array(void);
 pthread_mutex_t *get_mutex_print(void);
 pthread_mutex_t *get_mutex_for_number(void);
 void	        destroy_mutex(t_mutex *arr);
-int	            init_mutex(t_mutex *arr, uint32_t count);
+int	            init_mutex(t_mutex *arr, int32_t count);
 struct timeval	*get_time_start_work(void);
 
 #endif
