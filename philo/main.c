@@ -19,20 +19,10 @@ t_params_philo	*get_param_philo(void)
 	return (&param);
 }
 
-int32_t	get_number_philo_one(void)
+int32_t	get_number_philo(void)
 {
-	static int32_t	i = 1;
-
-	i += 2;
-	return (i - 2);
-}
-
-int32_t	get_number_philo_two(void)
-{
-	static int32_t	i = 2;
-
-	i += 2;
-	return (i - 2);
+	static int32_t	i = 0;
+	return (i++);
 }
 
 uint8_t		**get_flag_philo(void)
@@ -49,83 +39,34 @@ int	error(const char *str)
 	return (1);
 }
 
-void	*philo_live_one(__attribute__((unused))void *arg)
+static void	swap(int32_t *a, int32_t *b)
 {
-	static t_params_philo	*param;
-	static t_mutex			*mutex;
-	static int				flag = 1;
-	t_philo					philo;
-
-	philo.count = 0;
-	if (flag) {
-		param = get_param_philo();
-		mutex = get_mutex_struct();
-		--flag;
-	}
-	pthread_mutex_lock(&mutex->number);
-	philo.left = get_number_philo_one() % param->number_of_philo;
-	philo.right = (philo.left + 1) % param->number_of_philo;
-	philo.flag = &(*get_flag_philo())[philo.left - 1];
-	philo.last = *get_time_start_work();
-	pthread_mutex_unlock(&mutex->number);
-	while (1)
-	{
-		pthread_mutex_lock(&mutex->check);
-		if (*philo.flag)
-		{
-			pthread_mutex_unlock(&mutex->check);
-			break ;
-		}
-		pthread_mutex_unlock(&mutex->check);
-		pthread_mutex_lock(mutex->array + philo.left);
-		philo_say(&philo, "has take a fork 0\n");
-		pthread_mutex_lock(mutex->array + philo.right);
-		philo_say(&philo, "has take a fork 1\n");
-		gettimeofday(&philo.t, NULL);
-		philo.diff = (philo.t.tv_sec - philo.last.tv_sec) * 1000000 + (philo.t.tv_usec - philo.last.tv_usec);
-		if (philo.diff > param->time_to_die)
-		{
-			philo_say(&philo, "died\n");
-			pthread_mutex_lock(&mutex->check);
-			*philo.flag = 1;
-			pthread_mutex_unlock(&mutex->check);
-			pthread_mutex_unlock(mutex->array + philo.right);
-			pthread_mutex_unlock(mutex->array + philo.left);
-			break ;
-		}
-		philo.last = philo.t;
-		philo_say(&philo, "is eating\n");
-		++philo.count;
-		usleep((useconds_t)param->time_to_eat);
-		pthread_mutex_unlock(mutex->array + philo.right);
-		pthread_mutex_unlock(mutex->array + philo.left);
-		philo_say(&philo, "is sleeping\n");
-		usleep((useconds_t)param->time_to_sleep);
-		if (*philo.flag && philo.count == param->number_of_times_each_philo_must_eat)
-			return (0);
-		else
-			philo_say(&philo, "is thinking\n");
-	}
-	return (NULL);
+	*a ^= *b;
+	*b = *a ^ *b;
+	*a ^= *b;
 }
 
-void	*philo_live_two(__attribute__((unused))void *arg)
+void	*philo_live(__attribute__((unused))void *arg)
 {
 	static t_params_philo	*param;
 	static t_mutex			*mutex;
 	static int				flag = 1;
 	t_philo					philo;
 
-	philo.count = 0;
 	if (flag) {
 		param = get_param_philo();
 		mutex = get_mutex_struct();
+		gettimeofday(get_time_start_work(), NULL);
 		--flag;
 	}
 	pthread_mutex_lock(&mutex->number);
-	philo.left = get_number_philo_two() % param->number_of_philo;
+	philo.count = 0;
+	philo.number = get_number_philo();
+	philo.left = philo.number;
 	philo.right = (philo.left + 1) % param->number_of_philo;
-	philo.flag = &(*get_flag_philo())[philo.left - 1];
+	if (philo.left > philo.right)
+		swap(&philo.left, &philo.right);
+	philo.flag = &(*get_flag_philo())[philo.left];
 	philo.last = *get_time_start_work();
 	pthread_mutex_unlock(&mutex->number);
 	while (1)
@@ -137,32 +78,29 @@ void	*philo_live_two(__attribute__((unused))void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(&mutex->check);
-		pthread_mutex_lock(mutex->array + philo.right);
-		philo_say(&philo, "has take a fork 1\n");
 		pthread_mutex_lock(mutex->array + philo.left);
 		philo_say(&philo, "has take a fork 0\n");
+		pthread_mutex_lock(mutex->array + philo.right);
+		philo_say(&philo, "has take a fork 1\n");
 		gettimeofday(&philo.t, NULL);
-		philo.diff = (philo.t.tv_sec - philo.last.tv_sec) * 1000000 + (philo.t.tv_usec - philo.last.tv_usec);
-		if (philo.diff > param->time_to_die)
+		philo.diff = (philo.t.tv_sec - philo.last.tv_sec) * 1000 + (philo.t.tv_usec - philo.last.tv_usec) / 1000;
+		if (philo.diff > param->time_to_die || philo.diff + param->time_to_eat > param->time_to_die)
 		{
 			philo_say(&philo, "died\n");
 			pthread_mutex_lock(&mutex->check);
 			*philo.flag = 1;
 			pthread_mutex_unlock(&mutex->check);
-			pthread_mutex_unlock(mutex->array + philo.left);
-			pthread_mutex_unlock(mutex->array + philo.right);
-			break ;
 		}
-		philo.last = philo.t;
 		philo_say(&philo, "is eating\n");
 		++philo.count;
-		usleep((useconds_t)param->time_to_eat);  
-		pthread_mutex_unlock(mutex->array + philo.left);
+		usleep((useconds_t)param->time_to_eat * 1000);
+		gettimeofday(&philo.last, NULL);
 		pthread_mutex_unlock(mutex->array + philo.right);
+		pthread_mutex_unlock(mutex->array + philo.left);
 		philo_say(&philo, "is sleeping\n");
-		usleep((useconds_t)param->time_to_sleep);
-		if (*philo.flag && philo.count == param->number_of_times_each_philo_must_eat)
-			return (0);
+		usleep((useconds_t)param->time_to_sleep * 1000);
+		if (philo.count == param->number_of_times_each_philo_must_eat)
+			break ;
 		else
 			philo_say(&philo, "is thinking\n");
 	}
@@ -181,20 +119,15 @@ int	start_philo(t_params_philo *param)
 	*arr = (uint8_t *)malloc(sizeof(uint8_t) * (unsigned long)param->number_of_philo);
 	if (*arr == NULL || tid == NULL || init_mutex(get_mutex_struct(), param->number_of_philo))
 	{
-		error(TEXT"errro"RESET);
 		free(*arr);
 		free(tid);
 		return (1);
 	}
-	pthread_mutex_lock(&get_mutex_struct()->number);
-	pthread_mutex_unlock(&get_mutex_struct()->number);
 	check = &get_mutex_struct()->check;
 	ft_memset((void *)(*arr), 0, (size_t)param->number_of_philo);
-	gettimeofday(get_time_start_work(), NULL);
-	for (int i = 0; i < param->number_of_philo; i += 2)
-		pthread_create(&tid[i], NULL, philo_live_one, NULL);
-	for (int i = 1; i < param->number_of_philo; i += 2)
-		pthread_create(&tid[i], NULL, philo_live_two, NULL);
+	for (int i = 0; i < param->number_of_philo - 1; ++i)
+		pthread_create(&tid[i], NULL, philo_live, NULL);
+	pthread_create(&tid[param->number_of_philo - 1], NULL, philo_live, NULL);
 	flag = 0;
 	while(1)
 	{
@@ -223,9 +156,9 @@ int	init_param(t_params_philo *dst, int size, char **str)
 	error += ee_atoi(str[1], &dst->time_to_die);
 	error += ee_atoi(str[2], &dst->time_to_eat);
 	error += ee_atoi(str[3], &dst->time_to_sleep);
-	dst->time_to_die *= 1000;
-	dst->time_to_eat *= 1000;
-	dst->time_to_sleep *= 1000;
+	//dst->time_to_die *= 1000;
+	//dst->time_to_eat *= 1000;
+	//dst->time_to_sleep *= 1000;
 	dst->flag = 0;
 	if (size == 5)
 	{

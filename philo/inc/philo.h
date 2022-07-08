@@ -40,6 +40,7 @@ typedef struct s_params_philo
 
 typedef struct s_philo
 {
+	int32_t		number;
 	int64_t		diff;
 	int32_t		left;
 	int32_t		right;

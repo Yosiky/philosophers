@@ -66,25 +66,27 @@ void	swap(char *line)
 
 void	philo_say(t_philo *philo, char *str)
 {
+	static int8_t			flag = 0;
 	static char				line[100];
 	static int32_t			i;
 
 	pthread_mutex_lock(&get_mutex_struct()->print);
-	gettimeofday(&philo->t, NULL);
-	i = 0;
-	i = ee_itoa((philo->t.tv_sec - get_time_start_work()->tv_sec) * 1000000 + philo->t.tv_usec - get_time_start_work()->tv_usec, line);
-	line[i++] = ' ';
-	i += ee_itoa(philo->left + 1, line + i);
-	line[i++] = ' ';
-	i += ee_strcpy(line + i, (char *)str);
-	pthread_mutex_lock(&get_mutex_struct()->check);
-	if (*philo->flag)
+	if (flag)
 	{
-		pthread_mutex_unlock(&get_mutex_struct()->check);
 		pthread_mutex_unlock(&get_mutex_struct()->print);
 		return ;
 	}
-	write(1, line, (size_t)i);
+	if (str[0] == 'd')
+		flag = 1;
+	gettimeofday(&philo->t, NULL);
+	i = ee_itoa((philo->t.tv_sec - get_time_start_work()->tv_sec) * 1000000 + (philo->t.tv_usec - get_time_start_work()->tv_usec), line);
+	line[i++] = ' ';
+	i += ee_itoa(philo->number + 1, line + i);
+	line[i++] = ' ';
+	i += ee_strcpy(line + i, (char *)str);
+	pthread_mutex_lock(&get_mutex_struct()->check);
+	if (!(*philo->flag))
+		write(1, line, (size_t)i);
 	pthread_mutex_unlock(&get_mutex_struct()->check);
 	pthread_mutex_unlock(&get_mutex_struct()->print);
 }
