@@ -40,6 +40,7 @@ typedef struct s_params_philo
 
 typedef struct s_philo
 {
+	int64_t		diff;
 	int32_t		left;
 	int32_t		right;
 	int32_t		count;
@@ -50,8 +51,8 @@ typedef struct s_philo
 
 typedef struct s_mutex
 {
-	pthread_mutex_t	*array;
 	int32_t			size;
+	pthread_mutex_t	*array;
 	pthread_mutex_t	print;
 	pthread_mutex_t	number;
 	pthread_mutex_t	check;
@@ -61,7 +62,7 @@ int				ee_atoi(const char *str, int *ptr);
 uint32_t		ee_strlen(const char *str);
 int32_t			ee_putstr(int fd, const char *str);
 int32_t			ee_putnbr(int fd, const int32_t n);
-void			philo_say(int number_philo, char *str);
+void			philo_say(t_philo *philo, char *str);
 void			print_info(t_params_philo *param);
 t_mutex 		*get_mutex_struct(void);
 void	        destroy_mutex(t_mutex *arr);

@@ -19,7 +19,7 @@ struct timeval	*get_time_start_work(void)
 	return (&t);
 }
 
-static int32_t	ee_itoa(int32_t value, char *str)
+static int32_t	ee_itoa(int64_t value, char *str)
 {
 	int64_t	copy;
 	char	arr[30];
@@ -64,39 +64,27 @@ void	swap(char *line)
 	line[0] = '.';
 }
 
-void	philo_say(int number_philo, char *str)
+void	philo_say(t_philo *philo, char *str)
 {
-	static struct timeval	t;
 	static char				line[100];
 	static int32_t			i;
 
-	pthread_mutex_lock(get_mutex_print());
-	gettimeofday(&t, NULL);
-	pthread_mutex_lock(get_mutex_for_number());
-	if ((*get_flag_philo())[i - 1])
-	{
-		pthread_mutex_unlock(get_mutex_print());
-		pthread_mutex_unlock(get_mutex_for_number());
-		return ;
-	}
-	pthread_mutex_unlock(get_mutex_for_number());
-	if (t.tv_usec < get_time_start_work()->tv_usec)
-	{
-		i = ee_itoa((int32_t)(t.tv_sec - get_time_start_work()->tv_sec - 1), line);
-		line[i++] = ':';
-		i += ee_itoa((int32_t)(1000000 + t.tv_usec - get_time_start_work()->tv_usec), line + i);
-	}
-	else
-	{
-		i = ee_itoa((int32_t)(t.tv_sec - get_time_start_work()->tv_sec), line);
-		line[i++] = ':';
-		i += ee_itoa((int32_t)(t.tv_usec - get_time_start_work()->tv_usec), line + i);
-	}
-	swap(line + (i++) - 3);
+	pthread_mutex_lock(&get_mutex_struct()->print);
+	gettimeofday(&philo->t, NULL);
+	i = 0;
+	i = ee_itoa((philo->t.tv_sec - get_time_start_work()->tv_sec) * 1000000 + philo->t.tv_usec - get_time_start_work()->tv_usec, line);
 	line[i++] = ' ';
-	i += ee_itoa(number_philo, line + i);
+	i += ee_itoa(philo->left + 1, line + i);
 	line[i++] = ' ';
 	i += ee_strcpy(line + i, (char *)str);
+	pthread_mutex_lock(&get_mutex_struct()->check);
+	if (*philo->flag)
+	{
+		pthread_mutex_unlock(&get_mutex_struct()->check);
+		pthread_mutex_unlock(&get_mutex_struct()->print);
+		return ;
+	}
 	write(1, line, (size_t)i);
-	pthread_mutex_unlock(get_mutex_print());
+	pthread_mutex_unlock(&get_mutex_struct()->check);
+	pthread_mutex_unlock(&get_mutex_struct()->print);
 }
