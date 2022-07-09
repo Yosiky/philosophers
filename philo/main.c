@@ -12,34 +12,6 @@
 
 #include "philo.h"
 
-#ifdef __APPLE__
-
-void	ft_usleep(useconds_t n)
-{
-	struct timeval	start;
-	struct timeval	step;
-
-	gettimeofday(&start, NULL);
-	while (1)
-	{
-		usleep(50);
-		gettimeofday(&step, NULL);
-		if ((size_t)(((size_t)(step.tv_sec - start.tv_sec)) * 1000000 +
-((size_t)(step.tv_usec - start.tv_usec))) > n)
-			break ;
-	}
-}
-
-#else
-
-void	ft_usleep(useconds_t usec)
-{
-	usleep(usec);
-}
-
-#endif
-
-
 t_params_philo	*get_param_philo(void)
 {
 	static t_params_philo	param;
@@ -67,27 +39,57 @@ int	error(const char *str)
 	return (1);
 }
 
+void	philo_init(t_mutex **mut, t_params_philo **param, t_philo *philo)
+{
+	static int	flag = 1;
+
+	if (flag) {
+		*param = get_param_philo();
+		*mut = get_mutex_struct();
+		gettimeofday(get_time_start_work(), NULL);
+		--flag;
+	}
+	pthread_mutex_lock(&(*mut)->number);
+	philo->count = 0;
+	philo->number = get_number_philo();
+	philo->right = philo->number - 1;
+	philo->left = philo->number % (*param)->number_of_philo;
+	philo->flag = &(*get_flag_philo())[philo->left];
+	philo->last = *get_time_start_work();
+	pthread_mutex_unlock(&(*mut)->number);
+}
+
+void	philo_eat(t_params_philo *param, t_mutex *mutex, t_philo *philo)
+{
+	pthread_mutex_unlock(&mutex->check);
+	pthread_mutex_lock(mutex->array + philo->right);
+	philo_say(philo, "has take a fork 0\n");
+	pthread_mutex_lock(mutex->array + philo->left);
+	philo_say(philo, "has take a fork 1\n");
+	gettimeofday(&philo->t, NULL);
+	philo->diff = (philo->t.tv_sec - philo->last.tv_sec) * 1000000 + (philo->t.tv_usec - philo->last.tv_usec);
+	if (philo->diff > param->time_to_die || philo->diff + param->time_to_eat > param->time_to_die)
+	{
+		philo_say(philo, "died\n");
+		pthread_mutex_lock(&mutex->check);
+		*philo->flag = 1;
+		pthread_mutex_unlock(&mutex->check);
+	}
+	philo_say(philo, "is eating\n");
+	++philo->count;
+	ft_usleep((useconds_t)param->time_to_eat);
+	gettimeofday(&philo->last, NULL);
+	pthread_mutex_unlock(mutex->array + philo->left);
+	pthread_mutex_unlock(mutex->array + philo->right);
+}
+
 void	*philo_live(__attribute__((unused))void *arg)
 {
 	static t_params_philo	*param;
 	static t_mutex			*mutex;
-	static int				flag = 1;
 	t_philo					philo;
 
-	if (flag) {
-		param = get_param_philo();
-		mutex = get_mutex_struct();
-		gettimeofday(get_time_start_work(), NULL);
-		--flag;
-	}
-	pthread_mutex_lock(&mutex->number);
-	philo.count = 0;
-	philo.number = get_number_philo();
-	philo.right = philo.number - 1;
-	philo.left = philo.number % param->number_of_philo;
-	philo.flag = &(*get_flag_philo())[philo.left];
-	philo.last = *get_time_start_work();
-	pthread_mutex_unlock(&mutex->number);
+	philo_init(&mutex, &param, &philo);
 	while (!mutex->start)
 		continue;
 	if (philo.number % 2 == 0)
@@ -100,26 +102,7 @@ void	*philo_live(__attribute__((unused))void *arg)
 			pthread_mutex_unlock(&mutex->check);
 			break ;
 		}
-		pthread_mutex_unlock(&mutex->check);
-		pthread_mutex_lock(mutex->array + philo.right);
-		philo_say(&philo, "has take a fork 0\n");
-		pthread_mutex_lock(mutex->array + philo.left);
-		philo_say(&philo, "has take a fork 1\n");
-		gettimeofday(&philo.t, NULL);
-		philo.diff = (philo.t.tv_sec - philo.last.tv_sec) * 1000000 + (philo.t.tv_usec - philo.last.tv_usec);
-		if (philo.diff > param->time_to_die)
-		{
-			philo_say(&philo, "died\n");
-			pthread_mutex_lock(&mutex->check);
-			*philo.flag = 1;
-			pthread_mutex_unlock(&mutex->check);
-		}
-		philo_say(&philo, "is eating\n");
-		++philo.count;
-		ft_usleep((useconds_t)param->time_to_eat);
-		gettimeofday(&philo.last, NULL);
-		pthread_mutex_unlock(mutex->array + philo.left);
-		pthread_mutex_unlock(mutex->array + philo.right);
+		philo_eat(param, mutex, &philo);
 		philo_say(&philo, "is sleeping\n");
 		ft_usleep((useconds_t)param->time_to_sleep);
 		if (philo.count == param->number_of_times_each_philo_must_eat)

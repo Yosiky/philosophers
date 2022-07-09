@@ -11,7 +11,8 @@ SRC			=	\
 				say_philosopher	\
 				print_message	\
 				mutex			\
-				ft_memset
+				ft_memset		\
+				ft_usleep
 
 OBJ_DIR		=	obj
 OBJ			=	$(addprefix $(OBJ_DIR)/,$(SRC:=.o))
