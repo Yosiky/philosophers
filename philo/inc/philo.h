@@ -60,7 +60,7 @@ typedef struct s_mutex
 	pthread_mutex_t	check;
 }	t_mutex;
 
-int				ee_atoi(const char *str, int *ptr);
+int32_t			ee_atoi(const char *str, int *ptr);
 uint32_t		ee_strlen(const char *str);
 int32_t			ee_putstr(int fd, const char *str);
 int32_t			ee_putnbr(int fd, const int32_t n);
@@ -73,4 +73,11 @@ struct timeval	*get_time_start_work(void);
 void			*ft_memset(void *s, int c, size_t n);
 uint8_t			**get_flag_philo(void);
 void			ft_usleep(useconds_t n);
+uint8_t			**get_flag_philo(void);
+int32_t			get_number_philo(void);
+t_params_philo	*get_param_philo(void);
+void			philo_init(t_mutex **mut, t_params_philo **param, t_philo *philo);
+void			philo_eat(t_params_philo *param, t_mutex *mutex, t_philo *philo);
+void			*philo_live(__attribute__((unused))void *arg);
+int				start_philo(t_params_philo *param);
 #endif

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo.h"
+
 typedef unsigned long long	t_ull;
 
 static	t_ull	*ft_completion(t_ull *ptrs, size_t len, t_ull c)

@@ -12,9 +12,9 @@
 
 #include "philo.h"
 
-t_mutex *get_mutex_struct(void)
+t_mutex	*get_mutex_struct(void)
 {
-	static t_mutex  mutex;
+	static t_mutex	mutex;
 
 	return (&mutex);
 }
@@ -43,13 +43,16 @@ int	init_mutex(t_mutex *elem, int32_t count)
 	mask = 0;
 	elem->start = 0;
 	elem->size = -1;
-	elem->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * (unsigned long)count);
+	elem->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
+			* (unsigned long)count);
 	while (++elem->size < count)
+	{
 		if (pthread_mutex_init(&elem->array[elem->size], NULL))
 		{
 			mask = 1;
 			break ;
 		}	
+	}
 	if (pthread_mutex_init(&elem->print, NULL))
 		mask += 2;
 	if (pthread_mutex_init(&elem->number, NULL))

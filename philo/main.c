@@ -12,147 +12,11 @@
 
 #include "philo.h"
 
-t_params_philo	*get_param_philo(void)
-{
-	static t_params_philo	param;
-
-	return (&param);
-}
-
-int32_t	get_number_philo(void)
-{
-	static int32_t	i = 1;
-	return (i++);
-}
-
-uint8_t		**get_flag_philo(void)
-{
-	static uint8_t	*i = NULL;
-
-	return (&i);
-}
-
 int	error(const char *str)
 {
 	ee_putstr(2, ERROR "ERROR: " RESET);
 	ee_putstr(2, str);
 	return (1);
-}
-
-void	philo_init(t_mutex **mut, t_params_philo **param, t_philo *philo)
-{
-	static int	flag = 1;
-
-	if (flag) {
-		*param = get_param_philo();
-		*mut = get_mutex_struct();
-		gettimeofday(get_time_start_work(), NULL);
-		--flag;
-	}
-	pthread_mutex_lock(&(*mut)->number);
-	philo->count = 0;
-	philo->number = get_number_philo();
-	philo->right = philo->number - 1;
-	philo->left = philo->number % (*param)->number_of_philo;
-	philo->flag = &(*get_flag_philo())[philo->left];
-	philo->last = *get_time_start_work();
-	pthread_mutex_unlock(&(*mut)->number);
-}
-
-void	philo_eat(t_params_philo *param, t_mutex *mutex, t_philo *philo)
-{
-	pthread_mutex_unlock(&mutex->check);
-	pthread_mutex_lock(mutex->array + philo->right);
-	philo_say(philo, "has take a fork 0\n");
-	pthread_mutex_lock(mutex->array + philo->left);
-	philo_say(philo, "has take a fork 1\n");
-	gettimeofday(&philo->t, NULL);
-	philo->diff = (philo->t.tv_sec - philo->last.tv_sec) * 1000000 + (philo->t.tv_usec - philo->last.tv_usec);
-	if (philo->diff > param->time_to_die || philo->diff + param->time_to_eat > param->time_to_die)
-	{
-		philo_say(philo, "died\n");
-		pthread_mutex_lock(&mutex->check);
-		*philo->flag = 1;
-		pthread_mutex_unlock(&mutex->check);
-	}
-	philo_say(philo, "is eating\n");
-	++philo->count;
-	ft_usleep((useconds_t)param->time_to_eat);
-	gettimeofday(&philo->last, NULL);
-	pthread_mutex_unlock(mutex->array + philo->left);
-	pthread_mutex_unlock(mutex->array + philo->right);
-}
-
-void	*philo_live(__attribute__((unused))void *arg)
-{
-	static t_params_philo	*param;
-	static t_mutex			*mutex;
-	t_philo					philo;
-
-	philo_init(&mutex, &param, &philo);
-	while (!mutex->start)
-		continue;
-	if (philo.number % 2 == 0)
-		ft_usleep(50);
-	while (1)
-	{
-		pthread_mutex_lock(&mutex->check);
-		if (*philo.flag)
-		{
-			pthread_mutex_unlock(&mutex->check);
-			break ;
-		}
-		philo_eat(param, mutex, &philo);
-		philo_say(&philo, "is sleeping\n");
-		ft_usleep((useconds_t)param->time_to_sleep);
-		if (philo.count == param->number_of_times_each_philo_must_eat)
-			break ;
-		else
-			philo_say(&philo, "is thinking\n");
-	}
-	return (NULL);
-}
-
-int	start_philo(t_params_philo *param)
-{
-	pthread_t		*tid;
-	static int32_t	flag = 0;
-	uint8_t			**arr;
-	pthread_mutex_t	*check;
-
-	arr = get_flag_philo();
-	tid = (pthread_t *)malloc(sizeof(pthread_t) * (unsigned long)param->number_of_philo);
-	*arr = (uint8_t *)malloc(sizeof(uint8_t) * (unsigned long)param->number_of_philo);
-	if (*arr == NULL || tid == NULL || init_mutex(get_mutex_struct(), param->number_of_philo))
-	{
-		free(*arr);
-		free(tid);
-		return (1);
-	}
-	check = &get_mutex_struct()->check;
-	ft_memset((void *)(*arr), 0, (size_t)param->number_of_philo);
-	for (int i = 0; i < param->number_of_philo - 1; ++i)
-		pthread_create(&tid[i], NULL, philo_live, NULL);
-	pthread_create(&tid[param->number_of_philo - 1], NULL, philo_live, NULL);
-	get_mutex_struct()->start = 1;
-	flag = 0;
-	while(1)
-	{
-		pthread_mutex_lock(check);
-		if ((*arr)[flag])
-		{
-			ft_memset((void *)(*arr), 1, (size_t)param->number_of_philo);
-			pthread_mutex_unlock(check);
-			for (int i = 0; i < param->number_of_philo; ++i)
-				pthread_join(tid[i], NULL);
-			break;
-		}
-		else
-			pthread_mutex_unlock(check);
-		++flag;
-		flag %= param->number_of_philo;
-	}
-	return (0);
 }
 
 int	init_param(t_params_philo *dst, int size, char **str)
@@ -172,13 +36,17 @@ int	init_param(t_params_philo *dst, int size, char **str)
 		error += ee_atoi(str[4], &dst->number_of_times_each_philo_must_eat);
 		dst->flag = 1;
 	}
+	else
+		dst->number_of_times_each_philo_must_eat = -1;
 	return (error);
 }
 
 int	check_param(t_params_philo *param)
 {
-	return (param->number_of_philo < 1 || param->time_to_die <= 0 || param->time_to_eat <= 0 || param->time_to_sleep <= 0
-			|| (param->flag && param->number_of_times_each_philo_must_eat <= 0));
+	return (param->number_of_philo < 1 || param->time_to_die <= 0
+		|| param->time_to_eat <= 0 || param->time_to_sleep <= 0
+		|| (param->flag
+			&& param->number_of_times_each_philo_must_eat <= 0));
 }
 
 int	main(int argc, char **argv)

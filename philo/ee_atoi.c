@@ -18,7 +18,7 @@ static int	check_symbol(const char c)
 		|| c == '\t' || c == '\v' || c == ' ');
 }
 
-int	ee_atoi(const char *str, int *ptr)
+int32_t	ee_atoi(const char *str, int *ptr)
 {
 	int	i;
 	int	sign;
