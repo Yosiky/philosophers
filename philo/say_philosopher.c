@@ -81,7 +81,7 @@ void	philo_say(t_philo *philo, char *str)
 	gettimeofday(&philo->t, NULL);
 	i = ee_itoa((philo->t.tv_sec - get_time_start_work()->tv_sec) * 1000000 + (philo->t.tv_usec - get_time_start_work()->tv_usec), line);
 	line[i++] = ' ';
-	i += ee_itoa(philo->number + 1, line + i);
+	i += ee_itoa(philo->number, line + i);
 	line[i++] = ' ';
 	i += ee_strcpy(line + i, (char *)str);
 	pthread_mutex_lock(&get_mutex_struct()->check);

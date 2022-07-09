@@ -52,6 +52,7 @@ typedef struct s_philo
 
 typedef struct s_mutex
 {
+	int32_t			start;
 	int32_t			size;
 	pthread_mutex_t	*array;
 	pthread_mutex_t	print;
