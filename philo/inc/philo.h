@@ -80,4 +80,5 @@ void			philo_init(t_mutex **mut, t_params_philo **param, t_philo *philo);
 void			philo_eat(t_params_philo *param, t_mutex *mutex, t_philo *philo);
 void			*philo_live(__attribute__((unused))void *arg);
 int				start_philo(t_params_philo *param);
+int	destroy_tmutex(t_mutex *elem, int8_t mask);
 #endif

@@ -79,8 +79,8 @@ void	philo_say(t_philo *philo, char *str)
 	if (str[0] == 'd')
 		flag = 1;
 	gettimeofday(&philo->t, NULL);
-	i = ee_itoa((philo->t.tv_sec - get_time_start_work()->tv_sec) * 1000000
-			+ (philo->t.tv_usec - get_time_start_work()->tv_usec), line);
+	i = ee_itoa((philo->t.tv_sec - get_time_start_work()->tv_sec) * 1000
+			+ (philo->t.tv_usec - get_time_start_work()->tv_usec) / 1000, line);
 	line[i++] = ' ';
 	i += ee_itoa(philo->number, line + i);
 	line[i++] = ' ';

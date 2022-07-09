@@ -111,12 +111,14 @@ void    monitor(t_params_philo *param, uint8_t *arr, __attribute__((unused))pthr
 		++i;
 		i %= param->number_of_philo;
 	}
+	/*
 	for (int j = 0; j < param->number_of_philo; ++j)
 		if (i != j)
 		{
 			write(1, "-", 1);
 			pthread_join(tid[j], NULL);
 		}
+	*/
 }
 
 int	start_philo(t_params_philo *param)
@@ -139,5 +141,8 @@ int	start_philo(t_params_philo *param)
 	pthread_create(&tid[param->number_of_philo - 1], NULL, philo_live, NULL);
 	get_mutex_struct()->start = 1;
 	monitor(param, *arr, tid);
+	free(*arr);
+	free(tid);
+	destroy_tmutex(get_mutex_struct(), (int8_t)0xff);
 	return (0);
 }
