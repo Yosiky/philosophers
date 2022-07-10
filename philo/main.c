@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
+/*   By: eestelle <eestelle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 18:32:09 by eestelle          #+#    #+#             */
-/*   Updated: 2022/06/24 14:53:36 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/07/03 21:13:33 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,6 @@ int	error(const char *str)
 	return (1);
 }
 
-pthread_mutex_t	**get_mutex_array(void)
-{
-	static pthread_mutex_t	*array;
-
-	return (&array);
-}
-
-void	start_philo(__attribute__((unused))t_params_philo *param)
-{
-	int32_t		i;
-	pthread_mutex_t	**arr;
-
-	arr = get_mutex_array();
-	*arr = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * param->number_of_philo);
-	i = -1;
-	while (++i < param->number_of_philo)
-		pthread_mutex_init((*arr) + i, NULL);
-
-	return ;
-}
-
 int	init_param(t_params_philo *dst, int size, char **str)
 {
 	int	error;
@@ -48,32 +27,62 @@ int	init_param(t_params_philo *dst, int size, char **str)
 	error += ee_atoi(str[1], &dst->time_to_die);
 	error += ee_atoi(str[2], &dst->time_to_eat);
 	error += ee_atoi(str[3], &dst->time_to_sleep);
+	dst->time_to_die *= 1000;
+	dst->time_to_eat *= 1000;
+	dst->time_to_sleep *= 1000;
 	dst->flag = 0;
 	if (size == 5)
 	{
 		error += ee_atoi(str[4], &dst->number_of_times_each_philo_must_eat);
 		dst->flag = 1;
 	}
+	else
+		dst->number_of_times_each_philo_must_eat = -1;
 	return (error);
 }
 
 int	check_param(t_params_philo *param)
 {
-	return (param->number_of_philo <= 1 || param->time_to_die <= 0 || param->time_to_eat <= 0 || param->time_to_sleep <= 0
-			|| (param->flag && param->number_of_times_each_philo_must_eat <= 0));
+	return (param->number_of_philo < 1 || param->time_to_die <= 0
+		|| param->time_to_eat <= 0 || param->time_to_sleep <= 0
+		|| (param->flag
+			&& param->number_of_times_each_philo_must_eat <= 0));
+}
+
+void	kostily(t_params_philo *param)
+{
+	t_philo	philo;
+
+	pthread_mutex_init(&get_mutex_struct()->check, NULL);
+	pthread_mutex_init(&get_mutex_struct()->print, NULL);
+	gettimeofday(get_time_start_work(), NULL);
+	philo.number = 1;
+	philo_say(&philo, "has take a fork 0\n");
+	ft_usleep((useconds_t)param->time_to_die);
+	philo_say(&philo, "died\n");
+	pthread_mutex_destroy(&get_mutex_struct()->check);
+	pthread_mutex_destroy(&get_mutex_struct()->print);
 }
 
 int	main(int argc, char **argv)
 {
-	t_params_philo	param;
+	t_params_philo	*param;
 
+	param = get_param_philo();
 	if (argc == 5 || argc == 6)
 	{
-		if (init_param(&param, argc - 1, argv + 1))
-			return (error(TEXT"Arguments not valid"));
-		print_info(&param);
-		if (!check_param(&param))
-			start_philo(&param);
+		if (init_param(param, argc - 1, argv + 1))
+			return (error(TEXT"Arguments not valid"RESET));
+		print_info(param);
+		if (!check_param(param))
+		{
+			if (param->number_of_philo == 1)
+				kostily(param);
+			else if (!start_philo(param))
+				return (0);
+			else
+				error(TEXT"Don't init something)"RESET);
+		}
 		else
 			return (error(TEXT"Count philophers not valid"RESET));
 	}

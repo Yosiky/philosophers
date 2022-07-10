@@ -1,0 +1,176 @@
+[1;94mParameters for philosophers:
+	Number of philosophers: [1;97m5[1;94m
+	Time to die: [1;97m800000[1;94m
+	Time to eat: [1;97m200000[1;94m
+	Time to sleep: [1;97m200000[1;94m
+	Number of times eahe philospher must eat: [1;97m7
+[0m18 1 has take a fork 0
+28 1 has take a fork 1
+32 1 is eating
+52 3 has take a fork 0
+74 3 has take a fork 1
+77 3 is eating
+86 5 has take a fork 0
+200114 1 is sleeping
+200145 2 has take a fork 0
+200172 2 has take a fork 1
+200190 2 is eating
+200219 4 has take a fork 0
+200226 5 has take a fork 1
+200230 5 is eating
+200235 3 is sleeping
+400207 1 is thinking
+400274 3 is thinking
+400300 3 has take a fork 0
+400307 5 is sleeping
+400331 1 has take a fork 0
+400336 1 has take a fork 1
+400356 1 is eating
+400363 4 has take a fork 1
+400369 4 is eating
+400373 2 is sleeping
+600389 1 is sleeping
+600415 4 is sleeping
+600426 3 has take a fork 1
+600431 3 is eating
+600437 2 is thinking
+600449 5 is thinking
+600459 5 has take a fork 0
+600462 5 has take a fork 1
+600465 5 is eating
+600472 2 has take a fork 0
+800445 4 is thinking
+800463 4 has take a fork 0
+800471 2 has take a fork 1
+800519 2 is eating
+800526 1 is thinking
+800549 1 has take a fork 0
+800572 4 has take a fork 1
+800585 4 is eating
+800601 5 is sleeping
+800608 3 is sleeping
+1000553 2 is sleeping
+1000571 1 has take a fork 1
+1000588 1 is eating
+1000615 4 is sleeping
+1000632 5 is thinking
+1000649 5 has take a fork 0
+1000680 3 is thinking
+1000691 3 has take a fork 0
+1000694 3 has take a fork 1
+1000696 3 is eating
+1200622 2 is thinking
+1200640 2 has take a fork 0
+1200648 5 has take a fork 1
+1200659 5 is eating
+1200671 1 is sleeping
+1200683 4 is thinking
+1200757 3 is sleeping
+1200769 4 has take a fork 0
+1200784 2 has take a fork 1
+1200795 2 is eating
+1400678 5 is sleeping
+1400696 4 has take a fork 1
+1400709 4 is eating
+1400738 1 is thinking
+1400743 1 has take a fork 0
+1400809 2 is sleeping
+1400812 3 is thinking
+1400822 3 has take a fork 0
+1400828 1 has take a fork 1
+1400833 1 is eating
+1600706 5 is thinking
+1600774 5 has take a fork 0
+1600782 4 is sleeping
+1600800 3 has take a fork 1
+1600809 3 is eating
+1600835 2 is thinking
+1600848 1 is sleeping
+1600852 2 has take a fork 0
+1600861 5 has take a fork 1
+1600870 5 is eating
+1800852 4 is thinking
+1800877 4 has take a fork 0
+1800889 2 has take a fork 1
+1800903 2 is eating
+1800911 1 is thinking
+1800920 4 has take a fork 1
+1800926 4 is eating
+1800928 5 is sleeping
+1800936 3 is sleeping
+1800951 1 has take a fork 0
+2000936 4 is sleeping
+2000959 2 is sleeping
+2000971 1 has take a fork 1
+2000975 1 is eating
+2000999 5 is thinking
+2001005 5 has take a fork 0
+2001012 3 is thinking
+2001020 3 has take a fork 0
+2001024 3 has take a fork 1
+2001028 3 is eating
+2200983 4 is thinking
+2201036 3 is sleeping
+2201048 1 is sleeping
+2201056 4 has take a fork 0
+2201067 5 has take a fork 1
+2201072 5 is eating
+2201079 2 is thinking
+2201103 2 has take a fork 0
+2201107 2 has take a fork 1
+2201109 2 is eating
+2401056 1 is thinking
+2401090 3 is thinking
+2401122 2 is sleeping
+2401129 5 is sleeping
+2401141 1 has take a fork 0
+2401151 1 has take a fork 1
+2401154 1 is eating
+2401173 4 has take a fork 1
+2401178 4 is eating
+2401181 3 has take a fork 0
+2601184 2 is thinking
+2601203 2 has take a fork 0
+2601207 5 is thinking
+2601246 3 has take a fork 1
+2601251 3 is eating
+2601257 4 is sleeping
+2601281 5 has take a fork 0
+2601286 5 has take a fork 1
+2601306 5 is eating
+2601340 1 is sleeping
+2801279 3 is sleeping
+2801312 2 has take a fork 1
+2801334 2 is eating
+2801359 5 is sleeping
+2801368 1 is thinking
+2801377 4 is thinking
+2801386 4 has take a fork 0
+2801391 4 has take a fork 1
+2801397 4 is eating
+2801414 1 has take a fork 0
+3001363 3 is thinking
+3001380 3 has take a fork 0
+3001386 2 is sleeping
+3001426 1 has take a fork 1
+3001432 3 has take a fork 1
+3001442 3 is eating
+3001449 1 is eating
+3001456 4 is sleeping
+3001463 5 is thinking
+3001479 5 has take a fork 0
+3201428 2 is thinking
+3201497 3 is sleeping
+3201512 2 has take a fork 0
+3201534 2 has take a fork 1
+3201552 2 is eating
+3201573 4 is thinking
+3201583 4 has take a fork 0
+3201591 5 has take a fork 1
+3201934 5 is eating
+3201941 1 is sleeping
+3401574 2 is sleeping
+3401953 5 is sleeping
+3401965 4 has take a fork 1
+3401974 4 is eating
+3601996 4 is sleeping

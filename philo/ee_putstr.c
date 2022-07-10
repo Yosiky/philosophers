@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ee_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eestelle </var/spool/mail/eestelle>        +#+  +:+       +#+        */
+/*   By: eestelle <eestelle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 14:21:34 by eestelle          #+#    #+#             */
-/*   Updated: 2022/05/20 14:25:50 by eestelle         ###   ########.fr       */
+/*   Updated: 2022/07/03 21:08:53 by eestelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ee_putstr(int fd, const char *str)
+int32_t	ee_putstr(int fd, const char *str)
 {
-	return (write(fd, str, ee_strlen(str)));
+	return ((int32_t)write(fd, str, ee_strlen(str)));
 }
