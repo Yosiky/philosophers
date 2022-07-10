@@ -72,7 +72,7 @@ int	main(int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		if (init_param(param, argc - 1, argv + 1))
-			return (error(TEXT"Arguments not valid"));
+			return (error(TEXT"Arguments not valid"RESET));
 		print_info(param);
 		if (!check_param(param))
 		{

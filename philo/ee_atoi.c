@@ -18,7 +18,7 @@ static int	check_symbol(const char c)
 		|| c == '\t' || c == '\v' || c == ' ');
 }
 
-int32_t	ee_atoi(const char *str, int *ptr)
+int32_t	ee_atoi(const char *str, int64_t *ptr)
 {
 	int	i;
 	int	sign;
@@ -35,13 +35,14 @@ int32_t	ee_atoi(const char *str, int *ptr)
 		++i;
 		sign = -1;
 	}
-	while ('0' <= str[i] && str[i] <= '9')
-		*ptr = *ptr * 10 + str[i++] - '0';
-	*ptr = sign * (*ptr);
-	if (str[i] != '\0')
+	while ('0' <= str[i] && str[i] <= '9' && (int32_t)(*ptr) >= 0)
 	{
-		*ptr = 0;
-		return (2);
+		if ((int32_t)(*ptr) > (int32_t)(*ptr) * 10 + str[i] - '0')
+			break ;
+		*ptr = *ptr * 10 + str[i++] - '0';
 	}
-	return (0);
+	*ptr = (int64_t)sign * (*ptr) * (str[i] == '\0');
+	if (*ptr)
+		return (0);
+	return (2);
 }

@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-int32_t	ee_putnbr(int fd, const int32_t n)
+int64_t	ee_putnbr(int fd, const int64_t n)
 {
 	static char			arr[10];
-	static int32_t		len;
+	static int64_t		len;
 	static long long	value;
 
 	value = n;

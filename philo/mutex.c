@@ -36,7 +36,7 @@ int	destroy_tmutex(t_mutex *elem, int8_t mask)
 	return (mask);
 }
 
-int	init_mutex(t_mutex *elem, int32_t count)
+int	init_mutex(t_mutex *elem, int64_t count)
 {
 	int8_t	mask;
 

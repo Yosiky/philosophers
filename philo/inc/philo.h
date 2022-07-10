@@ -30,20 +30,20 @@
 
 typedef struct s_params_philo
 {
-	int32_t	number_of_philo;
-	int32_t	time_to_die;
-	int32_t	time_to_eat;
-	int32_t	time_to_sleep;
-	int32_t	number_of_times_each_philo_must_eat;
-	int32_t	flag;
+	int64_t	number_of_philo;
+	int64_t	time_to_die;
+	int64_t	time_to_eat;
+	int64_t	time_to_sleep;
+	int64_t	number_of_times_each_philo_must_eat;
+	int64_t	flag;
 }	t_params_philo;
 
 typedef struct s_philo
 {
-	int32_t			number;
+	int64_t			number;
 	int64_t			diff;
-	int32_t			left;
-	int32_t			right;
+	int64_t			left;
+	int64_t			right;
 	int32_t			count;
 	uint8_t			*flag;
 	struct timeval	t;
@@ -52,7 +52,7 @@ typedef struct s_philo
 
 typedef struct s_mutex
 {
-	int32_t			size;
+	int64_t			size;
 	pthread_mutex_t	*array;
 	pthread_mutex_t	print;
 	pthread_mutex_t	number;
@@ -69,16 +69,16 @@ void			philo_eat(t_params_philo *param, t_mutex *mutex,
 					t_philo *philo);
 void			*philo_live(__attribute__((unused))void *arg);
 int				start_philo(t_params_philo *param);
-int				init_mutex(t_mutex *arr, int32_t count);
+int				init_mutex(t_mutex *arr, int64_t count);
 int				destroy_tmutex(t_mutex *elem, int8_t mask);
 uint8_t			**get_flag_philo(void);
 t_params_philo	*get_param_philo(void);
 t_mutex			*get_mutex_struct(void);
 int32_t			get_number_philo(void);
-int32_t			ee_atoi(const char *str, int *ptr);
+int32_t			ee_atoi(const char *str, int64_t *ptr);
 uint32_t		ee_strlen(const char *str);
 int32_t			ee_putstr(int fd, const char *str);
-int32_t			ee_putnbr(int fd, const int32_t n);
+int64_t			ee_putnbr(int fd, const int64_t n);
 struct timeval	*get_time_start_work(void);
 
 #endif
