@@ -52,7 +52,6 @@ typedef struct s_philo
 
 typedef struct s_mutex
 {
-	int32_t			start;
 	int32_t			size;
 	pthread_mutex_t	*array;
 	pthread_mutex_t	print;
@@ -60,25 +59,26 @@ typedef struct s_mutex
 	pthread_mutex_t	check;
 }	t_mutex;
 
+void			ft_usleep(useconds_t n);
+void			philo_say(t_philo *philo, char *str);
+void			print_info(t_params_philo *param);
+void			*ft_memset(void *s, int c, size_t n);
+void			philo_init(t_mutex **mut, t_params_philo **param,
+					t_philo *philo);
+void			philo_eat(t_params_philo *param, t_mutex *mutex,
+					t_philo *philo);
+void			*philo_live(__attribute__((unused))void *arg);
+int				start_philo(t_params_philo *param);
+int				init_mutex(t_mutex *arr, int32_t count);
+int				destroy_tmutex(t_mutex *elem, int8_t mask);
+uint8_t			**get_flag_philo(void);
+t_params_philo	*get_param_philo(void);
+t_mutex			*get_mutex_struct(void);
+int32_t			get_number_philo(void);
 int32_t			ee_atoi(const char *str, int *ptr);
 uint32_t		ee_strlen(const char *str);
 int32_t			ee_putstr(int fd, const char *str);
 int32_t			ee_putnbr(int fd, const int32_t n);
-void			philo_say(t_philo *philo, char *str);
-void			print_info(t_params_philo *param);
-t_mutex			*get_mutex_struct(void);
-void			destroy_mutex(t_mutex *arr);
-int				init_mutex(t_mutex *arr, int32_t count);
 struct timeval	*get_time_start_work(void);
-void			*ft_memset(void *s, int c, size_t n);
-uint8_t			**get_flag_philo(void);
-void			ft_usleep(useconds_t n);
-uint8_t			**get_flag_philo(void);
-int32_t			get_number_philo(void);
-t_params_philo	*get_param_philo(void);
-void			philo_init(t_mutex **mut, t_params_philo **param, t_philo *philo);
-void			philo_eat(t_params_philo *param, t_mutex *mutex, t_philo *philo);
-void			*philo_live(__attribute__((unused))void *arg);
-int				start_philo(t_params_philo *param);
-int	destroy_tmutex(t_mutex *elem, int8_t mask);
+
 #endif

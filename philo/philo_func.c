@@ -16,13 +16,13 @@ void	philo_init(t_mutex **mut, t_params_philo **param, t_philo *philo)
 {
 	static int	flag = 1;
 
+	pthread_mutex_lock(&get_mutex_struct()->number);
 	if (flag) {
 		*param = get_param_philo();
 		*mut = get_mutex_struct();
 		gettimeofday(get_time_start_work(), NULL);
 		flag = 0;
 	}
-	pthread_mutex_lock(&(*mut)->number);
 	philo->count = 0;
 	philo->number = get_number_philo();
 	philo->right = philo->number - 1;
@@ -62,8 +62,6 @@ void	*philo_live(__attribute__((unused))void *arg)
 	t_philo					philo;
 
 	philo_init(&mutex, &param, &philo);
-	while (!mutex->start)
-		continue;
 	if (philo.number % 2 == 0)
 		ft_usleep(500);
 	while (1)
@@ -111,14 +109,6 @@ void    monitor(t_params_philo *param, uint8_t *arr, __attribute__((unused))pthr
 		++i;
 		i %= param->number_of_philo;
 	}
-	/*
-	for (int j = 0; j < param->number_of_philo; ++j)
-		if (i != j)
-		{
-			write(1, "-", 1);
-			pthread_join(tid[j], NULL);
-		}
-	*/
 }
 
 int	start_philo(t_params_philo *param)
@@ -137,9 +127,12 @@ int	start_philo(t_params_philo *param)
 	}	
 	ft_memset((void *)(*arr), 0, (size_t)param->number_of_philo);
 	for (int i = 0; i < param->number_of_philo - 1; ++i)
+	{
 		pthread_create(&tid[i], NULL, philo_live, NULL);
+		pthread_detach(tid[i]);
+	}
 	pthread_create(&tid[param->number_of_philo - 1], NULL, philo_live, NULL);
-	get_mutex_struct()->start = 1;
+	pthread_detach(tid[param->number_of_philo - 1]);
 	monitor(param, *arr, tid);
 	free(*arr);
 	free(tid);

@@ -49,6 +49,21 @@ int	check_param(t_params_philo *param)
 			&& param->number_of_times_each_philo_must_eat <= 0));
 }
 
+void	kostily(t_params_philo *param)
+{
+	t_philo	philo;
+
+	pthread_mutex_init(&get_mutex_struct()->check, NULL);
+	pthread_mutex_init(&get_mutex_struct()->print, NULL);
+	gettimeofday(get_time_start_work(), NULL);
+	philo.number = 1;
+	philo_say(&philo, "has take a fork 0\n");
+	ft_usleep((useconds_t)param->time_to_die);
+	philo_say(&philo, "died\n");
+	pthread_mutex_destroy(&get_mutex_struct()->check);
+	pthread_mutex_destroy(&get_mutex_struct()->print);
+}
+
 int	main(int argc, char **argv)
 {
 	t_params_philo	*param;
@@ -61,10 +76,12 @@ int	main(int argc, char **argv)
 		print_info(param);
 		if (!check_param(param))
 		{
-			if (!start_philo(param))
+			if (param->number_of_philo == 1)
+				kostily(param);
+			else if (!start_philo(param))
 				return (0);
 			else
-				error(TEXT"Don't initial all mutex"RESET);
+				error(TEXT"Don't init something)"RESET);
 		}
 		else
 			return (error(TEXT"Count philophers not valid"RESET));

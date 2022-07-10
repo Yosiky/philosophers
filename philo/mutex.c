@@ -41,7 +41,6 @@ int	init_mutex(t_mutex *elem, int32_t count)
 	int8_t	mask;
 
 	mask = 0;
-	elem->start = 0;
 	elem->size = -1;
 	elem->array = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* (unsigned long)count);
