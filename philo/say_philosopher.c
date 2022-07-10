@@ -15,8 +15,6 @@
 struct timeval	*get_time_start_work(void)
 {
 	static struct timeval	t;
-	static struct timeval	*start;
-	static char				flag = 0;
 
 	return (&t);
 }
