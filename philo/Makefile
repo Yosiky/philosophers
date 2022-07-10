@@ -1,6 +1,5 @@
 CC			=	gcc
 CFLAGS		=	-g3 -O3 -Wall -Wextra -Werror -pedantic-errors -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wsign-promo -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Wzero-as-null-pointer-constant -Wextra-semi -Wsign-conversion
-#LINK_FLAG	=	-fsanitize=thread 
 
 NAME		= philo    
 SRC			=	\
@@ -46,5 +45,5 @@ $(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -I$(HEADER_DIR)  $< -c -o $@
 
 $(NAME): $(OBJ) $(HEAD)
-	$(CC) $(OBJ) $(LINK_FLAG) -lpthread -o $@
+	$(CC) $(OBJ) -lpthread -o $@
 
