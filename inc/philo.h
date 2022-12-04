@@ -3,11 +3,13 @@
 # define ERROR ""
 # define END "\n"
 # define PRINT_ERROR(value) ERROR value END
+# define MAIN_MUTEX params->count
 
 # include <unistd.h>
 # include <string.h>
 # include <stdlib.h>
 # include <ctype.h>
+# include <pthread.h>
 
 
 typedef struct s_philo_param

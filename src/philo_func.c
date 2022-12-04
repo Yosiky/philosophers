@@ -23,3 +23,5 @@ void    philo_param_init(t_philo_param *params, int argc, char **argv)
     if (check_values)
         ee_error(PRINT_ERROR("not valid arguments"));
 }
+
+void    philo()
